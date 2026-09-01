@@ -15,16 +15,22 @@ router = APIRouter(
 )
 
 
+# ==========================================
+# CREATE SESSION
+# ==========================================
+
 @router.post("/")
 def create_session(
     document_id: int | None = None,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
+
     document = None
 
-    # If a document ID is provided, verify that it belongs to the user
+    # Verify document belongs to current user
     if document_id is not None:
+
         document = (
             db.query(Document)
             .filter(
@@ -35,12 +41,13 @@ def create_session(
         )
 
         if document is None:
+
             raise HTTPException(
                 status_code=404,
                 detail="Document not found"
             )
 
-    # Create the chat session
+
     session = ChatSession(
         title="New Chat",
         user_id=current_user.id,
@@ -48,8 +55,11 @@ def create_session(
     )
 
     db.add(session)
+
     db.commit()
+
     db.refresh(session)
+
 
     return {
         "message": "Chat session created successfully",
@@ -59,11 +69,16 @@ def create_session(
     }
 
 
+# ==========================================
+# GET SESSIONS
+# ==========================================
+
 @router.get("/")
 def get_sessions(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
+
     sessions = (
         db.query(ChatSession)
         .filter(
@@ -71,6 +86,7 @@ def get_sessions(
         )
         .all()
     )
+
 
     return [
         {
@@ -82,12 +98,17 @@ def get_sessions(
     ]
 
 
-@router.delete("/{session_id}")
-def delete_session(
+# ==========================================
+# DETACH PDF FROM SESSION
+# ==========================================
+
+@router.delete("/{session_id}/pdf")
+def detach_pdf(
     session_id: int,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
+
     session = (
         db.query(ChatSession)
         .filter(
@@ -97,22 +118,81 @@ def delete_session(
         .first()
     )
 
+
     if session is None:
+
         raise HTTPException(
             status_code=404,
             detail="Chat session not found"
         )
 
-    # Delete all messages belonging to this session
+
+    if session.document_id is None:
+
+        return {
+            "message": "No PDF is attached to this session"
+        }
+
+
+    # Remove PDF attachment from session only
+    session.document_id = None
+
+    db.commit()
+
+    db.refresh(session)
+
+
+    return {
+        "message": "PDF detached from chat session",
+        "session_id": session_id
+    }
+
+
+# ==========================================
+# DELETE SESSION
+# ==========================================
+
+@router.delete("/{session_id}")
+def delete_session(
+    session_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+
+    session = (
+        db.query(ChatSession)
+        .filter(
+            ChatSession.id == session_id,
+            ChatSession.user_id == current_user.id
+        )
+        .first()
+    )
+
+
+    if session is None:
+
+        raise HTTPException(
+            status_code=404,
+            detail="Chat session not found"
+        )
+
+
+    # Delete messages
     db.query(Chat).filter(
         Chat.session_id == session_id,
         Chat.user_id == current_user.id
-    ).delete(synchronize_session=False)
+    ).delete(
+        synchronize_session=False
+    )
 
-    # Delete the session itself
+
+    # Delete session
     db.delete(session)
+
     db.commit()
+
 
     return {
         "message": "Chat session deleted successfully"
     }
+

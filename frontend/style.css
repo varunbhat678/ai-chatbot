@@ -1,104 +1,1268 @@
+/* ==========================================
+   GLOBAL RESET
+========================================== */
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
+html,
+body {
+    width: 100%;
+    height: 100%;
+}
+
 body {
     font-family: Arial, sans-serif;
-    background: #f5f7fb;
+    background: #030303;
+    color: #f5f5f5;
+    overflow: hidden;
+    position: relative;
+}
+
+
+/* ==========================================
+   ANIMATED BACKGROUND
+========================================== */
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -3;
+
+    background:
+        radial-gradient(
+            circle at 15% 20%,
+            rgba(37, 99, 235, 0.28),
+            transparent 30%
+        ),
+        radial-gradient(
+            circle at 85% 25%,
+            rgba(124, 58, 237, 0.25),
+            transparent 30%
+        ),
+        radial-gradient(
+            circle at 50% 90%,
+            rgba(14, 165, 233, 0.18),
+            transparent 35%
+        ),
+        #030303;
+
+    animation: backgroundPulse 12s ease-in-out infinite alternate;
+}
+
+@keyframes backgroundPulse {
+    0% {
+        transform: scale(1);
+        filter: blur(0px);
+    }
+
+    50% {
+        transform: scale(1.05);
+        filter: blur(2px);
+    }
+
+    100% {
+        transform: scale(1.1);
+        filter: blur(4px);
+    }
+}
+
+
+/* ==========================================
+   MOVING GRID
+========================================== */
+
+body::after {
+    content: "";
+    position: fixed;
+    inset: -100px;
+    z-index: -2;
+
+    background-image:
+        linear-gradient(
+            rgba(255, 255, 255, 0.025) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            rgba(255, 255, 255, 0.025) 1px,
+            transparent 1px
+        );
+
+    background-size: 50px 50px;
+
+    transform: perspective(500px) rotateX(55deg) scale(1.5);
+
+    animation: gridMove 18s linear infinite;
+
+    mask-image: linear-gradient(
+        to bottom,
+        transparent,
+        black 25%,
+        black 75%,
+        transparent
+    );
+}
+
+@keyframes gridMove {
+    from {
+        background-position: 0 0;
+    }
+
+    to {
+        background-position: 0 50px;
+    }
+}
+
+
+/* ==========================================
+   FLOATING GLOW ORBS
+========================================== */
+
+.login-container::before,
+.chat-container::before {
+    content: "";
+    position: absolute;
+
+    width: 300px;
+    height: 300px;
+
+    border-radius: 50%;
+
+    background: radial-gradient(
+        circle,
+        rgba(37, 99, 235, 0.22),
+        transparent 70%
+    );
+
+    filter: blur(30px);
+
+    animation: floatingOrb 10s ease-in-out infinite;
+
+    pointer-events: none;
+}
+
+@keyframes floatingOrb {
+
+    0% {
+        transform: translate(-180px, -120px);
+    }
+
+    50% {
+        transform: translate(180px, 100px);
+    }
+
+    100% {
+        transform: translate(-180px, -120px);
+    }
+}
+
+
+/* ==========================================
+   LOGIN SCREEN
+========================================== */
+
+.login-container {
+    width: 100%;
     height: 100vh;
+
     display: flex;
     justify-content: center;
     align-items: center;
+
+    position: relative;
 }
 
-.chat-container {
+
+/* ==========================================
+   LOGIN CARD
+========================================== */
+
+.login-box {
     width: 90%;
-    max-width: 900px;
-    height: 90vh;
-    background: white;
-    border-radius: 16px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-    display: flex;
-    flex-direction: column;
+    max-width: 420px;
+
+    padding: 40px;
+
+    background: rgba(15, 15, 15, 0.72);
+
+    border: 1px solid rgba(255, 255, 255, 0.1);
+
+    border-radius: 22px;
+
+    backdrop-filter: blur(20px);
+
+    box-shadow:
+        0 30px 80px rgba(0, 0, 0, 0.7),
+        0 0 50px rgba(37, 99, 235, 0.08);
+
+    text-align: center;
+
+    position: relative;
+
     overflow: hidden;
+
+    animation: cardAppear 0.8s ease;
 }
+
+@keyframes cardAppear {
+    from {
+        opacity: 0;
+        transform: translateY(25px) scale(0.97);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+
+/* ==========================================
+   CARD GLOW LINE
+========================================== */
+
+.login-box::before {
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+    left: -100%;
+
+    width: 100%;
+    height: 2px;
+
+    background: linear-gradient(
+        90deg,
+        transparent,
+        #2563eb,
+        #7c3aed,
+        transparent
+    );
+
+    animation: glowingLine 4s linear infinite;
+}
+
+@keyframes glowingLine {
+    0% {
+        left: -100%;
+    }
+
+    100% {
+        left: 100%;
+    }
+}
+
+
+/* ==========================================
+   LOGIN TEXT
+========================================== */
+
+.login-box h1 {
+    font-size: 30px;
+    margin-bottom: 8px;
+
+    background: linear-gradient(
+        90deg,
+        #60a5fa,
+        #a78bfa
+    );
+
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.login-box p {
+    color: #9ca3af;
+    margin-bottom: 20px;
+}
+
+
+/* ==========================================
+   INPUTS
+========================================== */
+
+#loginUsername,
+#loginPassword,
+#registerUsername,
+#registerEmail,
+#registerPassword {
+
+    width: 100%;
+
+    padding: 14px 16px;
+
+    margin-bottom: 13px;
+
+    border: 1px solid rgba(255, 255, 255, 0.1);
+
+    border-radius: 12px;
+
+    outline: none;
+
+    font-size: 15px;
+
+    background: rgba(255, 255, 255, 0.05);
+
+    color: white;
+
+    transition: 0.3s ease;
+}
+
+#loginUsername::placeholder,
+#loginPassword::placeholder,
+#registerUsername::placeholder,
+#registerEmail::placeholder,
+#registerPassword::placeholder {
+    color: #6b7280;
+}
+
+#loginUsername:focus,
+#loginPassword:focus,
+#registerUsername:focus,
+#registerEmail:focus,
+#registerPassword:focus {
+
+    border-color: #3b82f6;
+
+    box-shadow:
+        0 0 0 3px rgba(59, 130, 246, 0.12),
+        0 0 20px rgba(59, 130, 246, 0.1);
+}
+
+
+/* ==========================================
+   LOGIN / REGISTER BUTTON
+========================================== */
+
+#loginButton,
+#registerButton {
+
+    width: 100%;
+
+    padding: 14px;
+
+    border: none;
+
+    border-radius: 12px;
+
+    background: linear-gradient(
+        135deg,
+        #2563eb,
+        #7c3aed
+    );
+
+    color: white;
+
+    cursor: pointer;
+
+    font-size: 15px;
+
+    font-weight: 600;
+
+    transition: 0.3s ease;
+
+    box-shadow:
+        0 8px 25px rgba(37, 99, 235, 0.25);
+}
+
+#loginButton:hover,
+#registerButton:hover {
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 12px 30px rgba(37, 99, 235, 0.4);
+}
+
+
+/* ==========================================
+   REGISTER / LOGIN SWITCH BUTTONS
+========================================== */
+
+#showRegisterButton,
+#showLoginButton {
+
+    margin-top: 15px;
+
+    border: none;
+
+    background: transparent;
+
+    color: #60a5fa;
+
+    cursor: pointer;
+
+    font-size: 14px;
+
+    transition: 0.3s ease;
+}
+
+#showRegisterButton:hover,
+#showLoginButton:hover {
+    color: #a78bfa;
+}
+
+
+/* ==========================================
+   CHAT CONTAINER
+========================================== */
+
+#chatContainer {
+
+    width: 95%;
+    max-width: 1200px;
+
+    height: 90vh;
+
+    display: flex;
+    flex-direction: row;
+
+    background: rgba(10, 10, 10, 0.75);
+
+    border: 1px solid rgba(255, 255, 255, 0.1);
+
+    border-radius: 20px;
+
+    backdrop-filter: blur(20px);
+
+    box-shadow:
+        0 30px 100px rgba(0, 0, 0, 0.8),
+        0 0 60px rgba(37, 99, 235, 0.06);
+
+    overflow: hidden;
+
+    position: relative;
+
+    animation: chatAppear 0.7s ease;
+}
+
+@keyframes chatAppear {
+    from {
+        opacity: 0;
+        transform: scale(0.97);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+
+/* ==========================================
+   SIDEBAR
+========================================== */
+
+.sidebar {
+
+    width: 260px;
+
+    background: rgba(5, 5, 5, 0.55);
+
+    border-right: 1px solid rgba(255, 255, 255, 0.08);
+
+    display: flex;
+
+    flex-direction: column;
+}
+
+
+/* ==========================================
+   SIDEBAR HEADER
+========================================== */
+
+.sidebar-header {
+
+    padding: 20px;
+
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.sidebar-header h2 {
+
+    font-size: 18px;
+
+    margin-bottom: 15px;
+
+    color: #e5e7eb;
+}
+
+
+/* ==========================================
+   NEW CHAT
+========================================== */
+
+#newChatButton {
+
+    width: 100%;
+
+    padding: 11px;
+
+    border: none;
+
+    border-radius: 10px;
+
+    background: linear-gradient(
+        135deg,
+        #2563eb,
+        #7c3aed
+    );
+
+    color: white;
+
+    cursor: pointer;
+
+    font-size: 14px;
+
+    transition: 0.3s ease;
+}
+
+#newChatButton:hover {
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 8px 20px rgba(37, 99, 235, 0.3);
+}
+
+
+/* ==========================================
+   LOGOUT
+========================================== */
+
+#logoutButton {
+
+    width: 100%;
+
+    margin-top: 10px;
+
+    padding: 10px;
+
+    border: 1px solid rgba(255, 255, 255, 0.08);
+
+    border-radius: 10px;
+
+    background: rgba(255, 255, 255, 0.03);
+
+    color: #f87171;
+
+    cursor: pointer;
+
+    font-size: 14px;
+
+    transition: 0.3s ease;
+}
+
+#logoutButton:hover {
+
+    background: rgba(239, 68, 68, 0.12);
+
+    border-color: rgba(239, 68, 68, 0.3);
+}
+
+
+/* ==========================================
+   UPLOAD PDF
+========================================== */
+
+#uploadPdfButton {
+
+    width: 100%;
+
+    margin-top: 10px;
+
+    padding: 10px;
+
+    border: 1px solid rgba(255, 255, 255, 0.1);
+
+    border-radius: 10px;
+
+    background: rgba(255, 255, 255, 0.04);
+
+    color: #d1d5db;
+
+    cursor: pointer;
+
+    transition: 0.3s ease;
+}
+
+#uploadPdfButton:hover {
+
+    background: rgba(37, 99, 235, 0.15);
+
+    border-color: rgba(59, 130, 246, 0.4);
+
+    color: white;
+}
+
+
+/* ==========================================
+   SESSION LIST
+========================================== */
+
+.session-list {
+
+    flex: 1;
+
+    padding: 12px;
+
+    overflow-y: auto;
+}
+
+
+/* ==========================================
+   SESSION
+========================================== */
+
+.session-wrapper {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 5px;
+
+    margin-bottom: 6px;
+}
+
+.session-wrapper .session-item {
+
+    flex: 1;
+
+    margin-bottom: 0;
+}
+
+.session-item {
+
+    padding: 12px;
+
+    border-radius: 10px;
+
+    cursor: pointer;
+
+    font-size: 14px;
+
+    background: rgba(255, 255, 255, 0.025);
+
+    color: #d1d5db;
+
+    border: 1px solid transparent;
+
+    transition: 0.25s ease;
+}
+
+.session-item:hover {
+
+    background: rgba(255, 255, 255, 0.07);
+
+    transform: translateX(3px);
+}
+
+.session-item.active {
+
+    background: rgba(37, 99, 235, 0.15);
+
+    border-color: rgba(59, 130, 246, 0.35);
+
+    color: white;
+
+    box-shadow:
+        inset 3px 0 0 #3b82f6;
+}
+
+
+/* ==========================================
+   DELETE SESSION
+========================================== */
+
+.delete-session-button {
+
+    width: 30px;
+    height: 30px;
+
+    border: none;
+
+    border-radius: 7px;
+
+    background: transparent;
+
+    color: #6b7280;
+
+    cursor: pointer;
+
+    font-size: 18px;
+
+    transition: 0.2s ease;
+}
+
+.delete-session-button:hover {
+
+    background: rgba(239, 68, 68, 0.15);
+
+    color: #f87171;
+}
+
+
+/* ==========================================
+   MAIN CHAT
+========================================== */
+
+.chat-main {
+
+    flex: 1;
+
+    min-width: 0;
+
+    display: flex;
+
+    flex-direction: column;
+
+    background:
+        radial-gradient(
+            circle at 80% 10%,
+            rgba(37, 99, 235, 0.06),
+            transparent 30%
+        );
+}
+
+
+/* ==========================================
+   CHAT HEADER
+========================================== */
 
 .chat-header {
-    padding: 20px;
-    background: #2563eb;
-    color: white;
+
+    padding: 20px 24px;
+
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+
+    background: rgba(0, 0, 0, 0.2);
 }
 
 .chat-header h1 {
+
     font-size: 22px;
+
     margin-bottom: 5px;
+
+    background: linear-gradient(
+        90deg,
+        #60a5fa,
+        #a78bfa
+    );
+
+    -webkit-background-clip: text;
+
+    -webkit-text-fill-color: transparent;
 }
 
 .chat-header p {
-    font-size: 14px;
-    opacity: 0.9;
+
+    font-size: 13px;
+
+    color: #6b7280;
 }
+
+
+/* ==========================================
+   CHAT BOX
+========================================== */
 
 .chat-box {
+
     flex: 1;
-    padding: 20px;
+
+    padding: 24px;
+
     overflow-y: auto;
+
     display: flex;
+
     flex-direction: column;
-    gap: 12px;
+
+    gap: 14px;
 }
+
+
+/* ==========================================
+   MESSAGE
+========================================== */
 
 .message {
+
     max-width: 75%;
-    padding: 12px 16px;
-    border-radius: 12px;
-    line-height: 1.5;
+
+    padding: 13px 17px;
+
+    border-radius: 14px;
+
+    line-height: 1.55;
+
     word-wrap: break-word;
+
+    animation: messageAppear 0.3s ease;
 }
+
+@keyframes messageAppear {
+
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+/* ==========================================
+   AI MESSAGE
+========================================== */
 
 .ai-message {
-    background: #eef2f7;
+
+    background: rgba(255, 255, 255, 0.055);
+
+    border: 1px solid rgba(255, 255, 255, 0.07);
+
+    color: #e5e7eb;
+
     align-self: flex-start;
+
+    box-shadow:
+        0 5px 20px rgba(0, 0, 0, 0.15);
 }
+
+
+/* ==========================================
+   USER MESSAGE
+========================================== */
 
 .user-message {
-    background: #2563eb;
+
+    background: linear-gradient(
+        135deg,
+        #2563eb,
+        #7c3aed
+    );
+
     color: white;
+
     align-self: flex-end;
+
+    box-shadow:
+        0 8px 25px rgba(37, 99, 235, 0.18);
 }
+
+
+/* ==========================================
+   INPUT AREA
+========================================== */
 
 .input-area {
+
     display: flex;
+
     gap: 10px;
+
     padding: 15px;
-    border-top: 1px solid #e5e7eb;
+
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+
+    background: rgba(0, 0, 0, 0.25);
 }
 
+
+/* ==========================================
+   MESSAGE INPUT
+========================================== */
+
 #messageInput {
+
     flex: 1;
-    padding: 12px 15px;
-    border: 1px solid #d1d5db;
-    border-radius: 10px;
+
+    padding: 13px 16px;
+
+    border: 1px solid rgba(255, 255, 255, 0.1);
+
+    border-radius: 12px;
+
     outline: none;
+
     font-size: 15px;
+
+    background: rgba(255, 255, 255, 0.045);
+
+    color: white;
+
+    transition: 0.3s ease;
+}
+
+#messageInput::placeholder {
+    color: #6b7280;
 }
 
 #messageInput:focus {
-    border-color: #2563eb;
+
+    border-color: rgba(59, 130, 246, 0.6);
+
+    box-shadow:
+        0 0 0 3px rgba(59, 130, 246, 0.08);
 }
 
+
+/* ==========================================
+   SEND BUTTON
+========================================== */
+
 #sendButton {
+
     padding: 12px 22px;
+
     border: none;
-    border-radius: 10px;
-    background: #2563eb;
+
+    border-radius: 11px;
+
+    background: linear-gradient(
+        135deg,
+        #2563eb,
+        #7c3aed
+    );
+
     color: white;
+
     cursor: pointer;
+
     font-size: 15px;
+
+    font-weight: 600;
+
+    transition: 0.3s ease;
 }
 
 #sendButton:hover {
-    background: #1d4ed8;
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 8px 25px rgba(37, 99, 235, 0.3);
+}
+
+#sendButton:disabled {
+
+    opacity: 0.5;
+
+    cursor: not-allowed;
+
+    transform: none;
+}
+
+
+/* ==========================================
+   PDF CARD
+========================================== */
+
+.uploaded-pdf {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 10px;
+
+    margin: 0 15px 10px 15px;
+
+    padding: 10px 13px;
+
+    background: rgba(255, 255, 255, 0.045);
+
+    border: 1px solid rgba(59, 130, 246, 0.2);
+
+    border-radius: 10px;
+
+    font-size: 14px;
+
+    color: #d1d5db;
+
+    backdrop-filter: blur(10px);
+}
+
+.uploaded-pdf span {
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+}
+
+#removePdfButton {
+
+    width: 28px;
+    height: 28px;
+
+    border: none;
+
+    border-radius: 7px;
+
+    background: transparent;
+
+    color: #9ca3af;
+
+    cursor: pointer;
+
+    font-size: 18px;
+
+    transition: 0.2s ease;
+}
+
+#removePdfButton:hover {
+
+    background: rgba(239, 68, 68, 0.15);
+
+    color: #f87171;
+}
+
+
+/* ==========================================
+   THINKING INDICATOR
+========================================== */
+
+.thinking-message {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 4px;
+}
+
+.thinking-dots {
+
+    display: inline-flex;
+
+    gap: 3px;
+}
+
+.thinking-dots span {
+
+    animation: thinkingDot 1.4s infinite;
+}
+
+.thinking-dots span:nth-child(2) {
+
+    animation-delay: 0.2s;
+}
+
+.thinking-dots span:nth-child(3) {
+
+    animation-delay: 0.4s;
+}
+
+@keyframes thinkingDot {
+
+    0%,
+    60%,
+    100% {
+        opacity: 0.25;
+    }
+
+    30% {
+        opacity: 1;
+    }
+}
+
+
+/* ==========================================
+   MARKDOWN
+========================================== */
+
+.ai-message strong {
+    font-weight: 700;
+}
+
+.ai-message em {
+    font-style: italic;
+}
+
+.ai-message h2,
+.ai-message h3,
+.ai-message h4 {
+
+    margin-top: 10px;
+
+    margin-bottom: 8px;
+}
+
+.ai-message ul,
+.ai-message ol {
+
+    margin: 8px 0 10px 22px;
+}
+
+.ai-message li {
+
+    margin-bottom: 5px;
+}
+
+.ai-message code {
+
+    font-family: Consolas, monospace;
+
+    font-size: 13px;
+
+    background: rgba(255, 255, 255, 0.1);
+
+    padding: 2px 5px;
+
+    border-radius: 5px;
+}
+
+.ai-message .code-block {
+
+    margin: 10px 0;
+
+    padding: 14px;
+
+    border-radius: 9px;
+
+    overflow-x: auto;
+
+    background: #050505;
+
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.ai-message .code-block code {
+
+    background: transparent;
+
+    padding: 0;
+
+    color: #e5e7eb;
+
+    white-space: pre;
+}
+
+
+/* ==========================================
+   SCROLLBAR
+========================================== */
+
+::-webkit-scrollbar {
+
+    width: 7px;
+}
+
+::-webkit-scrollbar-track {
+
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+
+    background: rgba(255, 255, 255, 0.12);
+
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+
+    background: rgba(255, 255, 255, 0.22);
+}
+
+
+/* ==========================================
+   RESPONSIVE
+========================================== */
+
+@media (max-width: 768px) {
+
+    body {
+        overflow: auto;
+    }
+
+    #chatContainer {
+
+        width: 100%;
+
+        height: 100vh;
+
+        border-radius: 0;
+    }
+
+    .sidebar {
+
+        width: 190px;
+    }
+
+    .message {
+
+        max-width: 85%;
+    }
+
+    .chat-box {
+
+        padding: 15px;
+    }
+}
+
+
+@media (max-width: 600px) {
+
+    .sidebar {
+
+        width: 160px;
+    }
+
+    .sidebar-header {
+
+        padding: 12px;
+    }
+
+    .sidebar-header h2 {
+
+        font-size: 16px;
+    }
+
+    .session-item {
+
+        font-size: 13px;
+
+        padding: 9px;
+    }
+
+    .input-area {
+
+        padding: 10px;
+
+        gap: 6px;
+    }
+
+    #messageInput {
+
+        min-width: 0;
+
+        font-size: 14px;
+    }
+
+    #sendButton {
+
+        padding: 10px 14px;
+    }
+
+    .message {
+
+        max-width: 90%;
+    }
 }

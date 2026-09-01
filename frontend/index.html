@@ -1,28 +1,245 @@
 <!DOCTYPE html>
+
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>AI Chatbot</title>
+```
+<title>AI Chatbot</title>
 
-    <link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css">
+```
+
 </head>
 
 <body>
 
-    <div class="chat-container">
+```
+<!-- ==============================
+     LOGIN SCREEN
+=============================== -->
+
+<div id="loginContainer" class="login-container">
+
+    <div class="login-box">
+
+        <h1>AI Chatbot</h1>
+
+        <p>Login to continue</p>
+
+        <form id="loginForm">
+
+            <input
+                type="text"
+                id="loginUsername"
+                placeholder="Email"
+                autocomplete="username"
+                required
+            >
+
+            <input
+                type="password"
+                id="loginPassword"
+                placeholder="Password"
+                autocomplete="current-password"
+                required
+            >
+
+            <button
+                type="submit"
+                id="loginButton"
+            >
+                Login
+            </button>
+
+        </form>
+
+        <p id="loginMessage"></p>
+
+        <button
+            type="button"
+            id="showRegisterButton"
+        >
+            Create an account
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- ==============================
+     REGISTER SCREEN
+=============================== -->
+
+<div
+    id="registerContainer"
+    class="login-container"
+    style="display: none;"
+>
+
+    <div class="login-box">
+
+        <h1>Create Account</h1>
+
+        <p>Register to use AI Chatbot</p>
+
+        <form id="registerForm">
+
+            <input
+                type="text"
+                id="registerUsername"
+                placeholder="Username"
+                autocomplete="username"
+                required
+            >
+
+            <input
+                type="email"
+                id="registerEmail"
+                placeholder="Email"
+                autocomplete="email"
+                required
+            >
+
+            <input
+                type="password"
+                id="registerPassword"
+                placeholder="Password"
+                autocomplete="new-password"
+                required
+            >
+
+            <button
+                type="submit"
+                id="registerButton"
+            >
+                Register
+            </button>
+
+        </form>
+
+        <p id="registerMessage"></p>
+
+        <button
+            type="button"
+            id="showLoginButton"
+        >
+            Back to Login
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- ==============================
+     CHAT SCREEN
+=============================== -->
+
+<div
+    id="chatContainer"
+    class="chat-container"
+    style="display: none;"
+>
+
+    <!-- ==============================
+         SIDEBAR
+    =============================== -->
+
+    <aside class="sidebar">
+
+        <div class="sidebar-header">
+
+            <h2>Chat Sessions</h2>
+
+            <button
+                type="button"
+                id="newChatButton"
+            >
+                + New Chat
+            </button>
+
+            <!-- LOGOUT BUTTON -->
+
+            <button
+                type="button"
+                id="logoutButton"
+            >
+                Logout
+            </button>
+
+
+            <!-- PDF INPUT -->
+
+            <input
+                type="file"
+                id="pdfInput"
+                accept=".pdf,application/pdf"
+                hidden
+            >
+
+
+            <!-- PDF BUTTON -->
+
+            <button
+                type="button"
+                id="uploadPdfButton"
+            >
+                Upload PDF
+            </button>
+
+
+            <!-- PDF STATUS -->
+
+            <p id="pdfMessage"></p>
+
+        </div>
+
+
+        <!-- SESSION LIST -->
+
+        <div
+            id="sessionList"
+            class="session-list"
+        >
+        </div>
+
+    </aside>
+
+
+    <!-- ==============================
+         MAIN CHAT AREA
+    =============================== -->
+
+    <section class="chat-main">
 
         <header class="chat-header">
+
             <h1>AI Chatbot</h1>
+
             <p>Ask me anything</p>
+
         </header>
 
-        <main id="chatBox" class="chat-box">
+
+        <!-- CHAT MESSAGES -->
+
+        <main
+            id="chatBox"
+            class="chat-box"
+        >
+
             <div class="message ai-message">
                 Hello! How can I help you today?
             </div>
+
         </main>
+
+
+        <!-- MESSAGE INPUT -->
 
         <div class="input-area">
 
@@ -33,15 +250,25 @@
                 autocomplete="off"
             >
 
-            <button id="sendButton">
+            <button
+                type="button"
+                id="sendButton"
+            >
                 Send
             </button>
 
         </div>
 
-    </div>
+    </section>
 
-    <script src="script.js"></script>
+</div>
+
+
+<!-- JAVASCRIPT -->
+
+<script src="script.js"></script>
+```
 
 </body>
+
 </html>

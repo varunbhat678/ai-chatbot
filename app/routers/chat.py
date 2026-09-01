@@ -1,3 +1,4 @@
+
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
@@ -19,6 +20,10 @@ router = APIRouter(
 )
 
 
+# ==========================================
+# CHAT HOME
+# ==========================================
+
 @router.get("/")
 def home():
     return {
@@ -26,12 +31,17 @@ def home():
     }
 
 
+# ==========================================
+# SEND MESSAGE
+# ==========================================
+
 @router.post("/send")
 def send_message(
     chat: ChatRequest,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
+
     # Find the session belonging to the current user
     chat_session = (
         db.query(ChatSession)
@@ -48,10 +58,15 @@ def send_message(
             detail="Chat session not found"
         )
 
-    # Get the document attached to this chat session
+
+    # ==========================================
+    # GET DOCUMENT ATTACHED TO SESSION
+    # ==========================================
+
     document = None
 
     if chat_session.document_id:
+
         document = (
             db.query(Document)
             .filter(
@@ -61,7 +76,11 @@ def send_message(
             .first()
         )
 
-    # Get previous messages from this session
+
+    # ==========================================
+    # GET PREVIOUS CHAT HISTORY
+    # ==========================================
+
     previous_chats = (
         db.query(Chat)
         .filter(
@@ -72,25 +91,39 @@ def send_message(
         .all()
     )
 
-    # Build conversation history
+
+    # ==========================================
+    # BUILD CONVERSATION HISTORY
+    # ==========================================
+
     conversation_history = ""
 
     for previous_chat in previous_chats:
+
         conversation_history += (
             f"User: {previous_chat.message}\n"
             f"Assistant: {previous_chat.response}\n\n"
         )
 
-    # If the session has a document, use RAG
+
+    # ==========================================
+    # AI RESPONSE
+    # ==========================================
+
+    # If PDF is attached, use RAG
     if document:
+
         ai_response = generate_pdf_response(
             chat.message,
             document.vector_path,
-            document.chunks_path
+            document.chunks_path,
+            conversation_history
         )
 
-    # Otherwise, use normal AI chat with conversation history
+
+    # Otherwise use normal AI chat
     else:
+
         prompt = f"""
 You are an AI assistant having a continuous conversation with the user.
 
@@ -108,7 +141,26 @@ Answer the current user message naturally and accurately.
 
         ai_response = generate_response(prompt)
 
-    # Save the conversation
+
+    # ==========================================
+    # AUTOMATIC SESSION TITLE
+    # ==========================================
+
+    if chat_session.title == "New Chat":
+
+        title = chat.message.strip()
+
+        if len(title) > 40:
+
+            title = title[:40] + "..."
+
+        chat_session.title = title
+
+
+    # ==========================================
+    # SAVE CONVERSATION
+    # ==========================================
+
     new_chat = Chat(
         user_id=current_user.id,
         session_id=chat.session_id,
@@ -117,8 +169,15 @@ Answer the current user message naturally and accurately.
     )
 
     db.add(new_chat)
+
     db.commit()
+
     db.refresh(new_chat)
+
+
+    # ==========================================
+    # RESPONSE
+    # ==========================================
 
     return {
         "session_id": chat.session_id,
@@ -127,12 +186,18 @@ Answer the current user message naturally and accurately.
     }
 
 
+# ==========================================
+# CHAT HISTORY
+# ==========================================
+
 @router.get("/history/{session_id}")
 def chat_history(
     session_id: int,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
+
+    # Verify session belongs to current user
     session = (
         db.query(ChatSession)
         .filter(
@@ -143,10 +208,16 @@ def chat_history(
     )
 
     if session is None:
+
         raise HTTPException(
             status_code=404,
             detail="Chat session not found"
         )
+
+
+    # ==========================================
+    # GET CHAT MESSAGES
+    # ==========================================
 
     chats = (
         db.query(Chat)
@@ -157,6 +228,11 @@ def chat_history(
         .order_by(Chat.id.asc())
         .all()
     )
+
+
+    # ==========================================
+    # RETURN HISTORY
+    # ==========================================
 
     return {
         "session_id": session_id,
