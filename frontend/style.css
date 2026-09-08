@@ -274,6 +274,7 @@ body::after {
     );
 
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
@@ -758,6 +759,7 @@ body::after {
     );
 
     -webkit-background-clip: text;
+    background-clip: text;
 
     -webkit-text-fill-color: transparent;
 }
